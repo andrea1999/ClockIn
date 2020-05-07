@@ -4,22 +4,22 @@ import java.util.Date;
 
 public class RegistroEmpleados {
 
-    int idEmpleado;
+    Empleado emple;
     Date fechaAlta;
     Date fechaBaja;
 
-    public RegistroEmpleados(int idEmpleado, Date fechaAlta, Date fechaBaja) {
-        this.idEmpleado = idEmpleado;
+    public RegistroEmpleados(Empleado emple, Date fechaAlta, Date fechaBaja) {
+        this.emple = emple;
         this.fechaAlta = fechaAlta;
         this.fechaBaja = fechaBaja;
     }
 
-    public int getIdEmpleado() {
-        return idEmpleado;
+    public Empleado getEmple() {
+        return emple;
     }
 
-    public void setIdEmpleado(int idEmpleado) {
-        this.idEmpleado = idEmpleado;
+    public void setEmple(Empleado emple) {
+        this.emple = emple;
     }
 
     public Date getFechaAlta() {

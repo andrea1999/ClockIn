@@ -4,30 +4,30 @@ import java.util.Date;
 
 public class RegistroJornada {
 
-    int idEmpleado;
-    int idJornada;
+    Empleado emple;
+    Jornada jornada;
     Date fecha;
 
-    public RegistroJornada(int idEmpleado, int idJornada, Date fecha) {
-        this.idEmpleado = idEmpleado;
-        this.idJornada = idJornada;
+    public RegistroJornada(Empleado emple, Jornada jornada, Date fecha) {
+        this.emple = emple;
+        this.jornada = jornada;
         this.fecha = fecha;
     }
 
-    public int getIdEmpleado() {
-        return idEmpleado;
+    public Empleado getEmple() {
+        return emple;
     }
 
-    public void setIdEmpleado(int idEmpleado) {
-        this.idEmpleado = idEmpleado;
+    public void setEmple(Empleado Emple) {
+        this.emple = emple;
     }
 
-    public int getIdJornada() {
-        return idJornada;
+    public Jornada getJornada() {
+        return jornada;
     }
 
-    public void setIdJornada(int idJornada) {
-        this.idJornada = idJornada;
+    public void setJornada(Jornada jornada) {
+        this.jornada = jornada;
     }
 
     public Date getFecha() {

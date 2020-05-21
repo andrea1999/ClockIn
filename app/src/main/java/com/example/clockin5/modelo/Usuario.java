@@ -2,24 +2,24 @@ package com.example.clockin5.modelo;
 
 public class Usuario {
 
-    int idEmp;
+    Empleado emple;
     String email;
     String password;
     int pin;
 
-    public Usuario(int idEmp, String email, String password, int pin) {
-        this.idEmp = idEmp;
+    public Usuario(Empleado emple, String email, String password, int pin) {
+        this.emple = emple;
         this.email = email;
         this.password = password;
         this.pin = pin;
     }
 
-    public int getIdEmp() {
-        return idEmp;
+    public Empleado getEmple() {
+        return emple;
     }
 
-    public void setIdEmp(int idEmp) {
-        this.idEmp = idEmp;
+    public void setEmple(Empleado Emple) {
+        this.emple = emple;
     }
 
     public String getEmail() {

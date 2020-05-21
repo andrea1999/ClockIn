@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "715364180970",
+    "firebase_url": "https://clockin-6d0eb.firebaseio.com",
+    "project_id": "clockin-6d0eb",
+    "storage_bucket": "clockin-6d0eb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:715364180970:android:a0a0f90f7c9c0acce9c893",
+        "android_client_info": {
+          "package_name": "com.example.clockin5"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "715364180970-p78ncm3vk6vimmdnl5mqkkoh2cj3qjdc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.clockin5",
+            "certificate_hash": "41b1954d91aa7985800043ef9b017af5bf0e9a61"
+          }
+        },
+        {
+          "client_id": "715364180970-qc30jrks18bsr4u1c0nq8hkhs6ttlfr9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuGrQFctUuEFCxOdkqtasxv_QYWbpVJtI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "715364180970-qc30jrks18bsr4u1c0nq8hkhs6ttlfr9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

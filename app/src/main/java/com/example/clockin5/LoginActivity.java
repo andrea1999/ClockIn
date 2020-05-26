@@ -22,7 +22,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -43,27 +42,35 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        txtEmail = findViewById(R.id.etEmail);
-        txtPassword = findViewById(R.id.etPassword);
-        btnLogin = findViewById(R.id.botonLogin);
+        txtEmail = findViewById(R.id.etNueva);
+        txtPassword = findViewById(R.id.etConfirmar);
+        btnLogin = findViewById(R.id.botonPass);
         contra = findViewById(R.id.tvContra);
 
-        progressDialog = new ProgressDialog(this);
+        if (mAuth.getCurrentUser() == null){
+            progressDialog = new ProgressDialog(this);
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signIn();
-            }
-        });
+            btnLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    signIn();
+                }
+            });
 
-        contra.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                recuperarPasswordDiaglog();
-            }
-        });
+            contra.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    recuperarPasswordDiaglog();
+                }
+            });
+        } else {
+            Intent i = new Intent(getApplication(), MainActivity.class);
+            startActivity(i);
+        }
 
+
+
+        Toast.makeText(getApplicationContext(), ""+ mAuth.getCurrentUser(), Toast.LENGTH_SHORT).show();
     }
 
     private void recuperarPasswordDiaglog() {
@@ -137,37 +144,40 @@ public class LoginActivity extends AppCompatActivity {
     }*/
 
     private void signIn() {
-        final String email = txtEmail.getText().toString();
-        String password = txtPassword.getText().toString();
+        final String email = txtEmail.getText().toString().trim();
+        String password = txtPassword.getText().toString().trim();
 
-        if (TextUtils.isEmpty(email)) {
+        if (email.equals("")) {
             Toast.makeText(this, "El campo EMAIL no puede estar vacío", Toast.LENGTH_LONG).show();
-        }
-
-        if (TextUtils.isEmpty(password)) {
+        } else if (password.equals("")) {
             Toast.makeText(this, "El campo CONTRASEÑA no puede estar vacío", Toast.LENGTH_LONG).show();
+        } else if (password.length() < 6) {
+            Toast.makeText(LoginActivity.this , "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show();
+        } else {
+            progressDialog.setMessage("Iniciando sesión...");
+            progressDialog.show();
+
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Intent i = new Intent(getApplication(), MainActivity.class);
+                                //i.putExtra(MainActivity.user, email);
+                                startActivity(i);
+
+                                Toast.makeText(LoginActivity.this, "Bienvenido: " + email, Toast.LENGTH_LONG).show();
+                            } else {
+                                progressDialog.dismiss();
+                                Toast.makeText(LoginActivity.this, "No se pudo iniciar sesión", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+                    });
         }
 
-        progressDialog.setMessage("Iniciando sesión...");
-        progressDialog.show();
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Intent i = new Intent(getApplication(), MainActivity.class);
-                            //i.putExtra(MainActivity.user, email);
-                            startActivity(i);
 
-                            Toast.makeText(LoginActivity.this, "Bienvenido: " + email, Toast.LENGTH_LONG).show();
-                        } else {
-                            //progressDialog.dismiss();
-                            Toast.makeText(LoginActivity.this, "No se pudo iniciar sesión", Toast.LENGTH_LONG).show();
-                        }
-
-                    }
-                });
     }
 
 }

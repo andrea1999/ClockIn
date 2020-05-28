@@ -22,16 +22,17 @@
         app:srcCompat="@drawable/capi" />
 
     <TextView
+        android:id="@+id/tvNombreDrawer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Steve Rogers"
+        android:text="aaaaaaaaaa"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tvEmailDrawer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="srogers1918@gmail.com" />
+        android:text="aaaaa" />
 
 </LinearLayout>

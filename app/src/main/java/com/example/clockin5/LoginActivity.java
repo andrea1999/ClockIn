@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-        Toast.makeText(getApplicationContext(), ""+ mAuth.getCurrentUser(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), ""+ mAuth.getCurrentUser(), Toast.LENGTH_SHORT).show();
     }
 
     private void recuperarPasswordDiaglog() {

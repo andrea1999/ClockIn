@@ -2,7 +2,7 @@ package com.example.clockin5.modelo;
 
 public class Empleado {
 
-    int idEmp;
+    String idEmp;
     String nombre;
     String apellido1;
     String apellido2;
@@ -10,7 +10,7 @@ public class Empleado {
     String imagen;
     boolean jefe;
 
-    public Empleado(int idEmp, String nombre, String apellido1, String apellido2, String dni, String imagen, boolean jefe) {
+    public Empleado(String idEmp, String nombre, String apellido1, String apellido2, String dni, String imagen, boolean jefe) {
         this.idEmp = idEmp;
         this.nombre = nombre;
         this.apellido1 = apellido1;
@@ -20,11 +20,11 @@ public class Empleado {
         this.jefe = jefe;
     }
 
-    public int getIdEmp() {
+    public String getIdEmp() {
         return idEmp;
     }
 
-    public void setIdEmp(int idEmp) {
+    public void setIdEmp(String idEmp) {
         this.idEmp = idEmp;
     }
 

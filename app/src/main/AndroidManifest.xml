@@ -26,6 +26,7 @@
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".FicharActivity" />
         <activity android:name=".EmpleadosActivity" />
+        <activity android:name=".IncioActivity" />
     </application>
 
 </manifest>

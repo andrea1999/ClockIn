@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -72,8 +73,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /*FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, new IncioFragment()).commit();*/
+
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, new IncioFragment()).commit();
+        fragmentManager.beginTransaction().replace(R.id.nav_host_fragment,new IncioFragment()).commit();
+
+        /*Intent ii = new Intent(getApplicationContext(), IncioActivity.class);
+        //ii.putExtra("names", "jakgl");
+        startActivity(ii);*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -88,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 int id = item.getItemId();
 
                 if (id == R.id.nav_inicio) {
-                    /*Intent ii = new Intent(getApplicationContext(), InicioActivity.class);
+                    /*Intent ii = new Intent(getApplicationContext(), IncioActivity.class);
                     //ii.putExtra("names", "jakgl");
                     startActivity(ii);*/
                 } else if (id == R.id.nav_cerrar) {
@@ -135,15 +143,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*private void getJSON(final String urlWebService) {
-
         class GetJSON extends AsyncTask<Void, Void, String> {
-
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
             }
-
-
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
@@ -154,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-
             @Override
             protected String doInBackground(Void... voids) {
                 try {
@@ -175,21 +178,16 @@ public class MainActivity extends AppCompatActivity {
         GetJSON getJSON = new GetJSON();
         getJSON.execute();
     }
-
     /*private class ConnectMySql extends AsyncTask<Void, Void, Empleado> {
         Empleado e = null;
-
         @Override
         protected Empleado doInBackground(Void... voids) {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
                 con = DriverManager.getConnection(urlConexionMySQL, usuario, contrasena);
                 System.out.println("Databaseection success");
-
                 String result = "Database Connection Successful\n";
-
                 e = buscarUsuario(con, e);
-
                 Toast.makeText(MainActivity.this, "encontrado: " + e.getNombre(), Toast.LENGTH_SHORT)
                         .show();
             } catch (Exception ex) {
@@ -197,7 +195,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return e;
         }
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -205,17 +202,14 @@ public class MainActivity extends AppCompatActivity {
                     .show();
         }
     }
-
     public Empleado buscarUsuario(Connection con, Empleado e) throws SQLException {
         Statement st = con.createStatement();
         ResultSet rs = st.executeQuery("select * from empleado");
         ResultSetMetaData rsmd = rs.getMetaData();
-
         while (rs.next()) {
             if (rs.getString(1).equals(user))
                 e = new Empleado(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getBoolean(7));
         }
-
         return e;
     }*/
 }

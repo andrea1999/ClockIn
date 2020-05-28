@@ -61,18 +61,18 @@ public class EmpleadosActivity extends AppCompatActivity {
         Empleado e2 = new Empleado("aaaaaa", "Tony", "Stark", "Ironman", "dgtgre", "rgfthytu", true);
         Empleado e3 = new Empleado("aaaaaa", "Peter", "Parker", "Spiderman", "fdgtetgvf", "fvbghngu", false);
 
-        /*empleados.add(e1);
+        empleados.add(e1);
         empleados.add(e2);
         empleados.add(e3);
-*/
-        /*adaptador = new Adaptador(this, empleados);
-        lista.setAdapter(adaptador);*/
+
+        adaptador = new Adaptador(this, empleados);
+        lista.setAdapter(adaptador);
 
         //getJSON("http://192.168.1.54/bd/consultartodosempleados.php");
         //getJSON("http://bvwxh4xvfrdqp7ztq9sz-mysql.services.clever-cloud.com/consultartodosempleados.php");
 
-        final ConnectMySql connectMySql = new ConnectMySql();
-        connectMySql.execute();
+        /*final ConnectMySql connectMySql = new ConnectMySql();
+        connectMySql.execute();*/
 
         //loadIntoListView(conexionMySQL);
     }
@@ -197,7 +197,7 @@ public class EmpleadosActivity extends AppCompatActivity {
         }
     }
 
-    private class ConnectMySql extends AsyncTask<Void, Void, Empleado> {
+    /*private class ConnectMySql extends AsyncTask<Void, Void, Empleado> {
         Empleado e = null;
 
         @Override
@@ -228,7 +228,7 @@ public class EmpleadosActivity extends AppCompatActivity {
         protected void onPostExecute(Empleado empleado) {
             super.onPostExecute(empleado);
         }
-    }
+    }*/
 
     /*public Empleado buscarUsuario(Connection con, Empleado e) throws SQLException {
         Statement st = con.createStatement();
@@ -243,7 +243,7 @@ public class EmpleadosActivity extends AppCompatActivity {
         return e;
     }*/
 
-    private void loadIntoListView(Connection con) {
+    /*private void loadIntoListView(Connection con) {
         try {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery("select * from empleado");
@@ -259,5 +259,5 @@ public class EmpleadosActivity extends AppCompatActivity {
 
         adaptador = new Adaptador(this, empleados);
         lista.setAdapter(adaptador);
-    }
+    }*/
 }

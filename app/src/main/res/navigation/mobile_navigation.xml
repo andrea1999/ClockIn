@@ -10,20 +10,4 @@
         android:name="com.example.clockin5.ui.inicio.IncioFragment"
         android:label="@string/menu_inicio"
         tools:layout="@layout/fragment_inicio" />
-
-    <fragment
-        android:id="@+id/nav_password"
-        android:name="com.example.clockin5.ui.password.PasswordFragment"
-        android:label="@string/menu_password"
-        tools:layout="@layout/activity_password" />
-
-    <fragment
-        android:id="@+id/nav_cerrar"
-        android:name="com.example.clockin5.ui.cerrar.CerrarFragment"
-        android:label="@string/menu_cerrar"
-        tools:layout="@layout/fragment_cerrar" />
-    <fragment
-        android:id="@+id/nav_empleados"
-        android:name="com.example.clockin5.ui.empleados.EmpleadosFragment"
-        android:label="@string/menu_empleados" />
 </navigation>

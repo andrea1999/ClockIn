@@ -19,6 +19,7 @@ public class FicharActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent i = new Intent(FicharActivity.this, MainActivity.class);
                 startActivity(i);
             }

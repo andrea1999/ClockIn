@@ -26,13 +26,6 @@
             android:textSize="20sp" />
 
         <RadioButton
-            android:id="@+id/rb_pausa"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Pausa"
-            android:textSize="20sp" />
-
-        <RadioButton
             android:id="@+id/rb_salida"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

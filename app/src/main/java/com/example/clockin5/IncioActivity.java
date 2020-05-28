@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
 
-public class InicioActivity extends AppCompatActivity {
+public class IncioActivity extends AppCompatActivity {
 
     CalendarView calendarView;
 
@@ -24,7 +24,7 @@ public class InicioActivity extends AppCompatActivity {
         Bundle bu = new Bundle();
         String b = bu.getString("names");
 
-        Calendar calendar = Calendar.getInstance();
+        /*Calendar calendar = Calendar.getInstance();
 
         calendarView.findViewById(R.id.calendarView);
 
@@ -34,9 +34,9 @@ public class InicioActivity extends AppCompatActivity {
             @Override
             public void onDayClick(@NotNull EventDay eventDay) {
                 Calendar selectedDate = calendarView.getFirstSelectedDate();
-                Toast.makeText(InicioActivity.this, selectedDate + "", Toast.LENGTH_SHORT).show();
+                Toast.makeText(IncioActivity.this, selectedDate + "", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
 
 
     }

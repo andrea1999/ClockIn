@@ -73,11 +73,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, new IncioFragment()).commit();*/
-
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.nav_host_fragment,new IncioFragment()).commit();
+        fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, new IncioFragment()).commit();
 
         /*Intent ii = new Intent(getApplicationContext(), IncioActivity.class);
         //ii.putExtra("names", "jakgl");
@@ -90,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

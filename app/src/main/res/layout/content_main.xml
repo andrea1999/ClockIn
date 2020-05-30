@@ -19,19 +19,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/mobile_navigation" />
 
-    <com.applandeo.materialcalendarview.CalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="147dp"
-        app:datePicker="false"
-        app:headerColor="@color/colorPrimary"
-        app:headerLabelColor="@color/text"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:swipeEnabled="true"
-        app:todayLabelColor="@color/colorAccent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

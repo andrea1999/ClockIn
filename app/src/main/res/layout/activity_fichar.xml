@@ -33,7 +33,7 @@
     </RadioGroup>
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/etPassFichar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="23dp"
@@ -42,10 +42,10 @@
         android:hint="Contraseña"
         android:inputType="textPassword"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        app:layout_constraintTop_toBottomOf="@+id/etNotas" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/etNotas"
         android:layout_width="367dp"
         android:layout_height="321dp"
         android:layout_marginStart="22dp"
@@ -57,7 +57,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/fabFichar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="327dp"
@@ -68,7 +68,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText2"
+        app:layout_constraintTop_toBottomOf="@+id/etNotas"
         app:srcCompat="@mipmap/ic_accept_foreground" />
 
     <TextView

@@ -2,13 +2,23 @@ package com.example.clockin5.modelo;
 
 import java.util.Date;
 
-public class Jornada {
+public class Jornada  implements java.io.Serializable {
 
-    int idJornada;
-    int tipo;
-    String ubicacion;
-    Date hora;
-    String nota;
+
+    private int idJornada;
+    private int tipo;
+    private String ubicacion;
+    private Date hora;
+    private String nota;
+    //private Set registroJornadas = new HashSet(0);
+
+    public Jornada() {
+    }
+
+
+    public Jornada(int idJornada) {
+        this.idJornada = idJornada;
+    }
 
     public Jornada(int idJornada, int tipo, String ubicacion, Date hora, String nota) {
         this.idJornada = idJornada;
@@ -18,43 +28,56 @@ public class Jornada {
         this.nota = nota;
     }
 
+    /*public Jornada(int idJornada, Byte tipo, String ubicacion, Date hora, String nota, Set registroJornadas) {
+        this.idJornada = idJornada;
+        this.tipo = tipo;
+        this.ubicacion = ubicacion;
+        this.hora = hora;
+        this.nota = nota;
+        this.registroJornadas = registroJornadas;
+    }*/
+
     public int getIdJornada() {
-        return idJornada;
+        return this.idJornada;
     }
 
     public void setIdJornada(int idJornada) {
         this.idJornada = idJornada;
     }
-
     public int getTipo() {
-        return tipo;
+        return this.tipo;
     }
 
     public void setTipo(int tipo) {
         this.tipo = tipo;
     }
-
     public String getUbicacion() {
-        return ubicacion;
+        return this.ubicacion;
     }
 
     public void setUbicacion(String ubicacion) {
         this.ubicacion = ubicacion;
     }
-
     public Date getHora() {
-        return hora;
+        return this.hora;
     }
 
     public void setHora(Date hora) {
         this.hora = hora;
     }
-
     public String getNota() {
-        return nota;
+        return this.nota;
     }
 
     public void setNota(String nota) {
         this.nota = nota;
     }
+
+    /*public Set getRegistroJornadas() {
+        return this.registroJornadas;
+    }
+
+    public void setRegistroJornadas(Set registroJornadas) {
+        this.registroJornadas = registroJornadas;
+    }*/
 }

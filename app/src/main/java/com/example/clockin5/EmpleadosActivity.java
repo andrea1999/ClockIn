@@ -3,7 +3,9 @@ package com.example.clockin5;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.clockin5.modelo.Empleado;
@@ -54,16 +57,10 @@ public class EmpleadosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_empleados);
 
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+
         lista = findViewById(R.id.list);
-
-        empleados = new ArrayList<Empleado>();
-        Empleado e1 = new Empleado("aaaaaa", "Steve", "Rogers", "Capitán América", "fjlk", "tjgdfkll", false);
-        Empleado e2 = new Empleado("aaaaaa", "Tony", "Stark", "Ironman", "dgtgre", "rgfthytu", true);
-        Empleado e3 = new Empleado("aaaaaa", "Peter", "Parker", "Spiderman", "fdgtetgvf", "fvbghngu", false);
-
-        empleados.add(e1);
-        empleados.add(e2);
-        empleados.add(e3);
 
         adaptador = new Adaptador(this, empleados);
         lista.setAdapter(adaptador);
@@ -260,4 +257,16 @@ public class EmpleadosActivity extends AppCompatActivity {
         adaptador = new Adaptador(this, empleados);
         lista.setAdapter(adaptador);
     }*/
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.i("ActionBar", "Atrás!");
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

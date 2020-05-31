@@ -16,37 +16,16 @@
         android:layout_width="331dp"
         android:layout_height="wrap_content"
 
-        android:layout_marginTop="206dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="12dp"
         android:hint="@string/prompt_email"
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="true"
         android:text="srogers@gmail.com"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/etConfirmar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/etConfirmar"
-        android:layout_width="331dp"
-        android:layout_height="wrap_content"
-
-        android:layout_marginTop="12dp"
-        android:hint="@string/prompt_password"
-
-        android:imeActionLabel="@string/action_sign_in_short"
-        android:imeOptions="actionDone"
-        android:inputType="textPassword"
-
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:text="srogers"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etNueva"
-        app:passwordToggleDrawable="?android:attr/fingerprintAuthDrawable"
-        app:passwordToggleEnabled="true" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView12" />
 
     <Button
         android:id="@+id/botonPass"
@@ -56,21 +35,68 @@
         android:enabled="true"
         android:text="Iniciar Sesión"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/etConfirmar"
+        app:layout_constraintStart_toStartOf="@+id/etConfirmar"
+        app:layout_constraintTop_toBottomOf="@+id/etConfirmar" />
+
+    <EditText
+        android:id="@+id/etConfirmar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginBottom="12dp"
+
+        android:hint="@string/prompt_password"
+        android:imeActionLabel="@string/action_sign_in_short"
+        android:imeOptions="actionDone"
+
+        android:inputType="textPassword"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:text="srogers"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/botonPass"
+        app:layout_constraintEnd_toEndOf="@+id/etNueva"
+        app:layout_constraintStart_toStartOf="@+id/etNueva"
+        app:layout_constraintTop_toBottomOf="@+id/etNueva"
+        app:passwordToggleDrawable="?android:attr/fingerprintAuthDrawable"
+        app:passwordToggleEnabled="true" />
+
+    <ImageView
+        android:id="@+id/imageView12"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/etNueva"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_logo1_foreground" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¿Has olvidado tu contraseña? "
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tvContra"
+        app:layout_constraintEnd_toStartOf="@+id/tvContra"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tvContra"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="¿Has olvidado tu contraseña? Entra aquí."
+        android:layout_marginEnd="13dp"
+        android:text="Entra aquí."
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/botonPass" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

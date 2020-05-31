@@ -22,7 +22,11 @@ import com.example.clockin5.RegistrosActivity;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class IncioFragment extends Fragment {
     private static final String TEXT = "text";
@@ -47,10 +51,20 @@ public class IncioFragment extends Fragment {
         cv.setOnDayClickListener(new OnDayClickListener() {
             @Override
             public void onDayClick(@NotNull EventDay eventDay) {
-                Calendar selectedDate = cv.getFirstSelectedDate();
-                Toast.makeText(getActivity(), ""+ selectedDate , Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(getActivity(), RegistrosActivity.class);
-                startActivity(i);
+                Calendar selectedDate = eventDay.getCalendar();
+                Date date = selectedDate.getTime();
+                SimpleDateFormat format1 = new SimpleDateFormat("dd-MM-yyyy");
+                String inActiveDate = null;
+                try {
+                    inActiveDate = format1.format(date);
+                    Toast.makeText(getActivity(), ""+ inActiveDate , Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(getActivity(), RegistrosActivity.class);
+                    i.putExtra("fecha", inActiveDate);
+                    startActivity(i);
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
             }
         });
 

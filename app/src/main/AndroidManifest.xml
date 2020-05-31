@@ -3,6 +3,8 @@
     package="com.example.clockin5">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -13,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".PasswordActitvity" />
+        <activity android:name=".PasswordActitvity"
+            android:label="Cambiar Contraseña"/>
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,10 +28,13 @@
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             ></activity>
-        <activity android:name=".FicharActivity" />
-        <activity android:name=".EmpleadosActivity" />
+        <activity android:name=".FicharActivity"
+            android:label="Registrar Jornada"/>
+        <activity android:name=".EmpleadosActivity"
+            android:label="Empleados"/>
         <activity android:name=".IncioActivity" />
-        <activity android:name=".RegistrosActivity" />
+        <activity android:name=".RegistrosActivity"
+            android:label="Registro Diario"/>
     </application>
 
 </manifest>

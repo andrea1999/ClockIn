@@ -1,11 +1,13 @@
 package com.example.clockin5;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -13,20 +15,30 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.clockin5.modelo.Empleado;
 import com.example.clockin5.ui.inicio.IncioFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,6 +57,18 @@ public class MainActivity extends AppCompatActivity {
     private String puerto = "3306";
     private String urlConexionMySQL = "jdbc:mysql://" + ip + ":" + puerto + "/" + baseDatos;
 
+    /*public static ArrayList<Empleado> getEmpleadoArrayList() {
+        return empleadoArrayList;
+    }*/
+
+    //private static ArrayList<Empleado> empleadoArrayList;
+
+    /*private static ArrayList<Empleado> empleadoArrayList = new ArrayList<Empleado>();
+    private static ArrayList<Jornada> jornadaArrayList = new ArrayList<Jornada>();
+    private static ArrayList<RegistroJornada> registroJornadasArrayList = new ArrayList<RegistroJornada>();
+    private static ArrayList<RegistroEmpleados> registroEmpleadosArrayList = new ArrayList<RegistroEmpleados>();
+
+    private Gestor g;*/
 
     private DatabaseReference mDatabase;
 
@@ -57,9 +81,9 @@ public class MainActivity extends AppCompatActivity {
 
         //Empleado e = null;
 
-        /*ConnectMySql connectMySql = new ConnectMySql();
-        connectMySql.execute();*/
+        //getJSON(urlConexionMySQL);
 
+        //empleadoArrayList = new ArrayList<Empleado>();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -141,23 +165,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*private void getJSON(final String urlWebService) {
-        class GetJSON extends AsyncTask<Void, Void, String> {
+        class GetJSON extends AsyncTask<Void, Void, Void> {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
             }
+
             @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-                try {
-                    //loadIntoListView(s);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            @Override
-            protected String doInBackground(Void... voids) {
+            protected Void doInBackground(Void... voids) {
                 try {
                     URL url = new URL(urlWebService);
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -167,23 +182,23 @@ public class MainActivity extends AppCompatActivity {
                     while ((json = bufferedReader.readLine()) != null) {
                         sb.append(json).append("\n");
                     }
-                    return sb.toString().trim();
                 } catch (Exception e) {
-                    return null;
+
                 }
             }
         }
         GetJSON getJSON = new GetJSON();
         getJSON.execute();
     }
-    /*private class ConnectMySql extends AsyncTask<Void, Void, Empleado> {
+
+    private class ConnectMySql extends AsyncTask<Void, Void, Void> {
         Empleado e = null;
         @Override
-        protected Empleado doInBackground(Void... voids) {
+        protected Void doInBackground(Void... voids) {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
                 con = DriverManager.getConnection(urlConexionMySQL, usuario, contrasena);
-                System.out.println("Databaseection success");
+                System.out.println("Database section success");
                 String result = "Database Connection Successful\n";
                 e = buscarUsuario(con, e);
                 Toast.makeText(MainActivity.this, "encontrado: " + e.getNombre(), Toast.LENGTH_SHORT)
@@ -191,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return e;
         }
         @Override
         protected void onPreExecute() {
@@ -200,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
                     .show();
         }
     }
+
     public Empleado buscarUsuario(Connection con, Empleado e) throws SQLException {
         Statement st = con.createStatement();
         ResultSet rs = st.executeQuery("select * from empleado");

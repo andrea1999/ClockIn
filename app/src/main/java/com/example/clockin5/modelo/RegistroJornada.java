@@ -2,39 +2,41 @@ package com.example.clockin5.modelo;
 
 import java.util.Date;
 
-public class RegistroJornada {
+public class RegistroJornada  implements java.io.Serializable {
 
-    Empleado emple;
-    Jornada jornada;
-    Date fecha;
 
-    public RegistroJornada(Empleado emple, Jornada jornada, Date fecha) {
-        this.emple = emple;
-        this.jornada = jornada;
+    private Date fecha;
+    private Empleado empleado;
+    private Jornada jornada;
+
+    public RegistroJornada() {
+    }
+
+    public RegistroJornada(Date fecha, Empleado empleado, Jornada jornada) {
         this.fecha = fecha;
-    }
-
-    public Empleado getEmple() {
-        return emple;
-    }
-
-    public void setEmple(Empleado Emple) {
-        this.emple = emple;
-    }
-
-    public Jornada getJornada() {
-        return jornada;
-    }
-
-    public void setJornada(Jornada jornada) {
+        this.empleado = empleado;
         this.jornada = jornada;
     }
 
     public Date getFecha() {
-        return fecha;
+        return this.fecha;
     }
 
     public void setFecha(Date fecha) {
         this.fecha = fecha;
+    }
+    public Empleado getEmpleado() {
+        return this.empleado;
+    }
+
+    public void setEmpleado(Empleado empleado) {
+        this.empleado = empleado;
+    }
+    public Jornada getJornada() {
+        return this.jornada;
+    }
+
+    public void setJornada(Jornada jornada) {
+        this.jornada = jornada;
     }
 }

@@ -8,7 +8,7 @@ public class Jornada  implements java.io.Serializable {
     private int idJornada;
     private int tipo;
     private String ubicacion;
-    private Date hora;
+    private String hora;
     private String nota;
     //private Set registroJornadas = new HashSet(0);
 
@@ -20,7 +20,7 @@ public class Jornada  implements java.io.Serializable {
         this.idJornada = idJornada;
     }
 
-    public Jornada(int idJornada, int tipo, String ubicacion, Date hora, String nota) {
+    public Jornada(int idJornada, int tipo, String ubicacion, String hora, String nota) {
         this.idJornada = idJornada;
         this.tipo = tipo;
         this.ubicacion = ubicacion;
@@ -58,11 +58,11 @@ public class Jornada  implements java.io.Serializable {
     public void setUbicacion(String ubicacion) {
         this.ubicacion = ubicacion;
     }
-    public Date getHora() {
+    public String getHora() {
         return this.hora;
     }
 
-    public void setHora(Date hora) {
+    public void setHora(String hora) {
         this.hora = hora;
     }
     public String getNota() {

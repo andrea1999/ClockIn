@@ -1,7 +1,9 @@
 package com.example.clockin5;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +23,12 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.clockin5.modelo.Empleado;
 import com.example.clockin5.ui.inicio.IncioFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,49 +36,38 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     static Connection conexionMySQL;
     TextView tvEmailDrawer, tvNombreDrawer;
+    SharedPreferences sharedPreferences;
+    ProgressDialog progressDialog;
+    String URL = "http://192.168.1.54/bd/consultartodosempleados.php";
+    String mn;
+    EmpleadosActivity.Adaptador adaptador;
+    ArrayList<Empleado> empleadoArrayList = new ArrayList<Empleado>();
+    String jsonString;
+    JSONArray jsonArray;
+    Empleado e;
+
     private AppBarConfiguration mAppBarConfiguration;
-
-    private Connection con;
-
     private String user;
-
     private String baseDatos = "bvwxh4xvfrdqp7ztq9sz";
     private String usuario = "uddpnkeunuezlkmg";
     private String contrasena = "86F5ES4UEbzwUUxq52eJ";
     private String ip = "bvwxh4xvfrdqp7ztq9sz-mysql.services.clever-cloud.com";
     private String puerto = "3306";
     private String urlConexionMySQL = "jdbc:mysql://" + ip + ":" + puerto + "/" + baseDatos;
-
-    /*public static ArrayList<Empleado> getEmpleadoArrayList() {
-        return empleadoArrayList;
-    }*/
-
-    //private static ArrayList<Empleado> empleadoArrayList;
-
-    /*private static ArrayList<Empleado> empleadoArrayList = new ArrayList<Empleado>();
-    private static ArrayList<Jornada> jornadaArrayList = new ArrayList<Jornada>();
-    private static ArrayList<RegistroJornada> registroJornadasArrayList = new ArrayList<RegistroJornada>();
-    private static ArrayList<RegistroEmpleados> registroEmpleadosArrayList = new ArrayList<RegistroEmpleados>();
-
-    private Gestor g;*/
-
     private DatabaseReference mDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,11 +76,12 @@ public class MainActivity extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        //Empleado e = null;
+        progressDialog = new ProgressDialog(this);
 
-        //getJSON(urlConexionMySQL);
+        getEmpleados();
+        sharedPreferences = getSharedPreferences("SHARED_PREF_NAME", Context.MODE_PRIVATE);
 
-        //empleadoArrayList = new ArrayList<Empleado>();
+        e = getUsuario();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -93,16 +91,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, FicharActivity.class);
+                i.putExtra("ID", e.getIdEmp());
                 startActivity(i);
             }
         });
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, new IncioFragment()).commit();
-
-        /*Intent ii = new Intent(getApplicationContext(), IncioActivity.class);
-        //ii.putExtra("names", "jakgl");
-        startActivity(ii);*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -111,6 +106,10 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        if (e.getJefe() == false) {
+            Menu nav_Menu = navigationView.getMenu();
+            nav_Menu.findItem(R.id.nav_empleados).setVisible(false);
+        }
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -143,11 +142,10 @@ public class MainActivity extends AppCompatActivity {
 
         View headerView = navigationView.getHeaderView(0);
         tvNombreDrawer = (TextView) headerView.findViewById(R.id.tvNombreDrawer);
+        tvNombreDrawer.setText(e.getNombre());
 
         tvEmailDrawer = (TextView) headerView.findViewById(R.id.tvEmailDrawer);
         tvEmailDrawer.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-
-
     }
 
     @Override
@@ -164,65 +162,90 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    /*private void getJSON(final String urlWebService) {
-        class GetJSON extends AsyncTask<Void, Void, Void> {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-            }
+    public void getEmpleados() {
+        progressDialog.setMessage("Fetching data from the Server...");
+        progressDialog.show();
 
-            @Override
-            protected Void doInBackground(Void... voids) {
-                try {
-                    URL url = new URL(urlWebService);
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    StringBuilder sb = new StringBuilder();
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                    String json;
-                    while ((json = bufferedReader.readLine()) != null) {
-                        sb.append(json).append("\n");
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
+
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        progressDialog.dismiss();
+
+                        Toast.makeText(MainActivity.this, "Data Successfully Fetched", Toast.LENGTH_SHORT).show();
+                        try {
+                            JSONObject js = new JSONObject(response);
+
+                            JSONArray jsonArray = js.getJSONArray("empleado");
+
+                            jsonString = jsonArray.toString();
+
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                            editor.putString("jsonString", jsonString);
+                            editor.apply();
+
+                            List<JSONObject> jsonValues = new ArrayList<JSONObject>();
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                jsonValues.add(jsonArray.getJSONObject(i));
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (Exception e) {
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
 
-                }
-            }
-        }
-        GetJSON getJSON = new GetJSON();
-        getJSON.execute();
+                    }
+                });
+        RequestQueue request = Volley.newRequestQueue(this);
+        request.add(stringRequest);
     }
 
-    private class ConnectMySql extends AsyncTask<Void, Void, Void> {
-        Empleado e = null;
-        @Override
-        protected Void doInBackground(Void... voids) {
+    public Empleado getUsuario() {
+        SharedPreferences sharedPreferences = getSharedPreferences("SHARED_PREF_NAME", Context.MODE_PRIVATE);
+        jsonString = sharedPreferences.getString("jsonString", null);
+//here, string to jsonArray conversion takes place
+        try {
+            jsonArray = new JSONArray(jsonString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < jsonArray.length(); i++) {
             try {
-                Class.forName("com.mysql.jdbc.Driver");
-                con = DriverManager.getConnection(urlConexionMySQL, usuario, contrasena);
-                System.out.println("Database section success");
-                String result = "Database Connection Successful\n";
-                e = buscarUsuario(con, e);
-                Toast.makeText(MainActivity.this, "encontrado: " + e.getNombre(), Toast.LENGTH_SHORT)
-                        .show();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String idB = jsonObject.getString("id_emp");
+                //simple if statement allows only those jsonObjects to be added the laptopList where price is less than 40000.
+                if (idB.equals(FirebaseAuth.getInstance().getUid())) {
+                    JSONObject jsonObject2 = jsonArray.getJSONObject(i);
+                    String id = jsonObject2.getString("id_emp");
+                    String nombre = jsonObject2.getString("nombre");
+                    String apellido1 = jsonObject2.getString("apellido1");
+                    String apellido2 = jsonObject2.getString("apellido2");
+                    String dni = jsonObject2.getString("dni");
+                    String imagen = jsonObject2.getString("imagen");
+                    int jefe = jsonObject2.getInt("jefe");
+                    if (imagen.isEmpty()) {
+                        imagen = "";
+                    } else if (apellido2.isEmpty()) {
+                        apellido2 = "";
+                    }
+                    boolean jefeB = false;
+                    if (jefe == 1) {
+                        jefeB = true;
+                    }
+                    Empleado empleado = new Empleado(id, nombre, apellido1, apellido2, dni, imagen, jefeB);
+                    return empleado;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            Toast.makeText(MainActivity.this, "Please wait...", Toast.LENGTH_SHORT)
-                    .show();
-        }
+        return null;
     }
-
-    public Empleado buscarUsuario(Connection con, Empleado e) throws SQLException {
-        Statement st = con.createStatement();
-        ResultSet rs = st.executeQuery("select * from empleado");
-        ResultSetMetaData rsmd = rs.getMetaData();
-        while (rs.next()) {
-            if (rs.getString(1).equals(user))
-                e = new Empleado(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getBoolean(7));
-        }
-        return e;
-    }*/
 }

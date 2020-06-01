@@ -5,24 +5,24 @@ import java.util.Date;
 public class RegistroJornada  implements java.io.Serializable {
 
 
-    private Date fecha;
+    private String fecha;
     private Empleado empleado;
     private Jornada jornada;
 
     public RegistroJornada() {
     }
 
-    public RegistroJornada(Date fecha, Empleado empleado, Jornada jornada) {
+    public RegistroJornada(String fecha, Empleado empleado, Jornada jornada) {
         this.fecha = fecha;
         this.empleado = empleado;
         this.jornada = jornada;
     }
 
-    public Date getFecha() {
+    public String getFecha() {
         return this.fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
     public Empleado getEmpleado() {

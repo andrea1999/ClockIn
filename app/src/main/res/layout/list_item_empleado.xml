@@ -7,34 +7,35 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="0dp"
-        android:layout_height="72dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="17dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toStartOf="@+id/lblnombre"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/capi" />
+        app:srcCompat="@mipmap/ic_logo1_foreground" />
 
     <TextView
         android:id="@+id/lblnombre"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="256dp"
+        android:layout_marginEnd="132dp"
         android:text="Nombre"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/lblemail"
-        android:layout_width="wrap_content"
+        android:layout_width="258dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="13dp"
+        android:layout_marginTop="5dp"
         android:text="email@email.com"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/lblnombre"
         app:layout_constraintTop_toBottomOf="@+id/lblnombre" />
 </androidx.constraintlayout.widget.ConstraintLayout>

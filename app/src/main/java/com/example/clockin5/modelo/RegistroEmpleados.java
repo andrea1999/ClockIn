@@ -7,19 +7,19 @@ public class RegistroEmpleados  implements java.io.Serializable {
 
     private String empleadoIdEmp;
     private Empleado empleado;
-    private Date fechaAlta;
-    private Date fechaBaja;
+    private String fechaAlta;
+    private String fechaBaja;
 
     public RegistroEmpleados() {
 
     }
 
 
-    public RegistroEmpleados(Empleado empleado, Date fechaAlta) {
+    public RegistroEmpleados(Empleado empleado, String fechaAlta) {
         this.empleado = empleado;
         this.fechaAlta = fechaAlta;
     }
-    public RegistroEmpleados(Empleado empleado, Date fechaAlta, Date fechaBaja) {
+    public RegistroEmpleados(Empleado empleado, String fechaAlta, String fechaBaja) {
         this.empleado = empleado;
         this.fechaAlta = fechaAlta;
         this.fechaBaja = fechaBaja;
@@ -39,23 +39,19 @@ public class RegistroEmpleados  implements java.io.Serializable {
     public void setEmpleado(Empleado empleado) {
         this.empleado = empleado;
     }
-    public Date getFechaAlta() {
+    public String getFechaAlta() {
         return this.fechaAlta;
     }
 
-    public void setFechaAlta(Date fechaAlta) {
+    public void setFechaAlta(String fechaAlta) {
         this.fechaAlta = fechaAlta;
     }
-    public Date getFechaBaja() {
+    public String getFechaBaja() {
         return this.fechaBaja;
     }
 
-    public void setFechaBaja(Date fechaBaja) {
+    public void setFechaBaja(String fechaBaja) {
         this.fechaBaja = fechaBaja;
     }
-
-
-
-
 }
 

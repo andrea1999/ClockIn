@@ -68,18 +68,6 @@ public class IncioFragment extends Fragment {
             }
         });
 
-        b = (Button) layout.findViewById(R.id.button);
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getActivity(), RegistrosActivity.class);
-                startActivity(i);
-            }
-        });
-
-
-
-
         return layout;
     }
 }

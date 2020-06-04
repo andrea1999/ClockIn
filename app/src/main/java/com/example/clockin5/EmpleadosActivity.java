@@ -33,7 +33,8 @@ public class EmpleadosActivity extends AppCompatActivity {
     static Connection conexionMySQL;
     SharedPreferences sharedPreferences;
     ProgressDialog progressDialog;
-    String URL = "http://192.168.1.54/bd/consultartodosempleados.php";
+    //String URL = "http://192.168.1.54/bd/consultartodosempleados.php";
+    String URL = "http://clockin.byethost32.com/consultartodosempleados.php";
     String mn;
     Adaptador adaptador;
 
@@ -41,12 +42,6 @@ public class EmpleadosActivity extends AppCompatActivity {
     String jsonString;
     String idF = null;
     private ListView lista;
-    private String baseDatos = "bvwxh4xvfrdqp7ztq9sz";
-    private String usuario = "uddpnkeunuezlkmg";
-    private String contrasena = "86F5ES4UEbzwUUxq52eJ";
-    private String ip = "bvwxh4xvfrdqp7ztq9sz-mysql.services.clever-cloud.com";
-    private String puerto = "3306";
-    private String urlConexionMySQL = "jdbc:mysql://" + ip + ":" + puerto + "/" + baseDatos;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -165,8 +160,7 @@ public class EmpleadosActivity extends AppCompatActivity {
 
             idF = empleadoArrayList.get(position).getIdEmp();
 
-            contenedor.nombre.setText(empleadoArrayList.get(position).getNombre() + empleadoArrayList.get(position).getApellido1());
-            //contenedor.getEmail().setText(empleadoArrayList.get(position).getApellido1() + " " + empleadoArrayList.get(position).getApellido2());
+            contenedor.nombre.setText(empleadoArrayList.get(position).getNombre() + " " + empleadoArrayList.get(position).getApellido1());
             if (empleadoArrayList.get(position).getJefe() == true) {
                 contenedor.getEmail().setText("Jefe");
             } else {

@@ -2,6 +2,8 @@ package com.example.clockin5;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -16,8 +18,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.clockin5.modelo.Empleado;
 import com.example.clockin5.modelo.Jornada;
+import com.example.clockin5.modelo.RegistroJornada;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,19 +42,31 @@ import org.json.JSONObject;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class FicharActivity extends AppCompatActivity {
+public class FicharActivity extends AppCompatActivity implements Response.Listener<JSONObject>, Response.ErrorListener {
 
     RadioButton rbEntrada, rbSalida;
     RadioGroup radioGroup;
     EditText etNotas, etContra;
-    String ubicacion = "", notas = "";
-    int tipo;
-    String id;
+    String ubicacion = "", notas = "", hora = "", fecha = "", tipoS = "";
+    int tipo, idJ;
+    String idE;
+    Empleado e;
 
     ArrayList<Jornada> jornadaArrayList;
     ArrayList<Empleado> empleadoArrayList;
 
-    String URL = "http://192.168.1.54/bd/consultartodosempleados.php";
+    //String URL = "http://clockin.byethost32.com/consultartodosempleados.php";
+    //String URL1 = "http://192.168.1.54/bd/consultarjornadas.php";
+    RequestQueue rq;
+    JsonRequest jrq;
+    StringRequest sr;
+    String jsonString;
+    SharedPreferences sharedPreferences;
+    /*Se declara una variable de tipo LocationManager encargada de proporcionar acceso al servicio de localización del sistema.*/
+    private LocationManager locManager;
+    /*Se declara una variable de tipo Location que accederá a la última posición conocida proporcionada por el proveedor.*/
+    private Location loc;
+    private double latitud, longitud, altura, precision;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,10 +78,19 @@ public class FicharActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-        Bundle b = getIntent().getExtras();
-        id = b.getString("ID");
+        latitud = 0;
+        longitud = 0;
+        altura = 0;
+        precision = 0;
 
-        Toast.makeText(FicharActivity.this, "" + id, Toast.LENGTH_LONG).show();
+        idJ = 0;
+
+        Bundle b = getIntent().getExtras();
+        idE = b.getString("ID");
+
+        rq = Volley.newRequestQueue(this);
+
+        //Toast.makeText(FicharActivity.this, "" + id, Toast.LENGTH_LONG).show();
 
         etNotas = findViewById(R.id.etNotas);
         etContra = findViewById(R.id.etPassFichar);
@@ -72,27 +102,48 @@ public class FicharActivity extends AppCompatActivity {
 
         empleados();
 
-        Toast.makeText(FicharActivity.this, "" + empleadoArrayList.get(0).getDni(), Toast.LENGTH_LONG).show();
+        //getIdJ();
 
-        if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(id)) {
+        sharedPreferences = getSharedPreferences("SHARED_PREF_NAME", Context.MODE_PRIVATE);
+
+        Toast.makeText(FicharActivity.this, "" + idJ, Toast.LENGTH_LONG).show();
+
+        if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(idE)) {
             etContra.setEnabled(false);
+            etContra.setHint("Sólo para rol Empleado");
         }
+
+
+        Toast.makeText(FicharActivity.this, fecha, Toast.LENGTH_LONG).show();
 
         FloatingActionButton fab = findViewById(R.id.fabFichar);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(id)) {
-                    if (etContra.getText().toString().isEmpty()) {
+                hora = LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute() + ":" + LocalDateTime.now().getSecond();
+                fecha = LocalDateTime.now().getDayOfMonth() + "-" + LocalDateTime.now().getMonthValue() + "-" + LocalDateTime.now().getYear();
+                e = null;
+                for (int i = 0; i < empleadoArrayList.size(); i++) {
+                    String idE = empleadoArrayList.get(i).getIdEmp();
+                    if (idE.equals(idE)) {
+                        e = empleadoArrayList.get(i);
+                    }
+                }
 
+                if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(idE)) {
+                    if (etContra.getText().toString().isEmpty()) {
+                        Toast.makeText(FicharActivity.this, "Introduce la contraseña", Toast.LENGTH_LONG).show();
                     } else {
                         if (rbSalida.isChecked() || rbEntrada.isChecked()) {
                             if (rbEntrada.isChecked()) {
                                 tipo = 0;
-                                ubicacion = "aaa";
+                                tipoS = "Entrada";
                                 notas = etNotas.getText().toString();
+                                ubicacion = "Taller Focus S.L.";
+                                //obtenerUbicacion();
                             } else {
                                 tipo = 1;
+                                tipoS = "Salida";
                                 ubicacion = "";
                                 notas = etNotas.getText().toString();
                             }
@@ -104,16 +155,18 @@ public class FicharActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        int id = 0; //jornadaArrayList.size();
-                        /*Jornada j = new Jornada(id, tipo, ubicacion, Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()), notas);
-                        jornadaArrayList.add(j);*/
+                                        //jornadaArrayList.size();
+                                        Jornada j = new Jornada(idJ, tipo, ubicacion, hora, notas);
+                                        RegistroJornada rj = new RegistroJornada(fecha, e, j);
 
-                                        Toast.makeText(FicharActivity.this, id + " " + tipo + " " + notas + " " + ubicacion + " " + LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute() + ":" + LocalDateTime.now().getSecond(), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(FicharActivity.this, idJ + " " + tipo + " " + notas + " " + ubicacion + " " + hora, Toast.LENGTH_LONG).show();
 
                                         Toast.makeText(FicharActivity.this, "Contraseña correcta", Toast.LENGTH_LONG).show();
 
-                            /*Intent i = new Intent(FicharActivity.this, MainActivity.class);
-                            startActivity(i);*/
+                                        //registrar(tipoS, ubicacion, hora, notas);
+
+                                        /*Intent i = new Intent(FicharActivity.this, MainActivity.class);
+                                        startActivity(i);*/
                                     } else {
                                         Toast.makeText(FicharActivity.this, "Contraseña incorrecta", Toast.LENGTH_LONG).show();
                                     }
@@ -127,17 +180,27 @@ public class FicharActivity extends AppCompatActivity {
                     if (rbSalida.isChecked() || rbEntrada.isChecked()) {
                         if (rbEntrada.isChecked()) {
                             tipo = 0;
-                            ubicacion = "aaa";
+                            tipoS = "Entrada";
                             notas = etNotas.getText().toString();
+                            ubicacion = "Taller Focus S.L.";
+                            //obtenerUbicacion();
                         } else {
                             tipo = 1;
+                            tipoS = "Salida";
                             ubicacion = "";
                             notas = etNotas.getText().toString();
                         }
-                        Toast.makeText(FicharActivity.this, id + " " + tipo + " " + notas + " " + ubicacion + " " + LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute() + ":" + LocalDateTime.now().getSecond(), Toast.LENGTH_LONG).show();
-                        //
-                        /*Intent i = new Intent(FicharActivity.this, MainActivity.class);
-                            startActivity(i);*/
+
+                        Jornada j = new Jornada(idJ, tipo, ubicacion, hora, notas);
+                        RegistroJornada rj = new RegistroJornada(fecha, e, j);
+
+                        Toast.makeText(FicharActivity.this, idJ + " " + tipo + " " + notas + " " + ubicacion + " " + hora, Toast.LENGTH_LONG).show();
+
+                        //registrar(tipoS, ubicacion, hora, notas);
+
+                                        /*Intent i = new Intent(FicharActivity.this, MainActivity.class);
+                                        startActivity(i);*/
+
                     } else {
                         Toast.makeText(FicharActivity.this, "Selecciona si es entrada o salida", Toast.LENGTH_LONG).show();
                     }
@@ -195,4 +258,112 @@ public class FicharActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+
+    }
+
+    @Override
+    public void onResponse(JSONObject response) {
+
+    }
+
+    /*public String obtenerUbicacion(){
+        ActivityCompat.requestPermissions(FicharActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ubicacion = "";
+            Toast.makeText(FicharActivity.this, "No se han aceptado los permisios necesarios", Toast.LENGTH_LONG);
+        } else {
+            //Se asigna a la clase LocationManager el servicio a nivel de sistema a partir del nombre.
+            locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            loc = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            latitud = loc.getLatitude();
+            longitud = loc.getLongitude();
+            altura = loc.getAltitude();
+            precision = loc.getAccuracy();
+
+            ubicacion = "(" + latitud + ", " + longitud + ")";
+        }
+        return ubicacion;
+    }*/
+
+    /*public void registrar(final String tipoSS, final String ubicacion, final String hora, final String nota) {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String URL = "http://192.168.1.54/bd/guardarjornada.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Jornada jornada = new Jornada();
+                        try {
+                            JSONObject objResultado = new JSONObject(response);
+                            String extadox = objResultado.get("estado").toString();
+                            if (!extadox.equalsIgnoreCase("exito")) {
+                                Toast.makeText(FicharActivity.this, "error", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(FicharActivity.this, "acierto", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        }) {
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("tipo", tipoS);
+                params.put("ubicacion", ubicacion);
+                params.put("hora", hora);
+                params.put("nota", nota);
+                return params;
+            }
+        };
+        queue.add(stringRequest);
+    }*/
+
+    /*public void getIdJ() {
+        String URL1 = "http://192.168.1.54/bd/consultarjornadas.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL1,
+
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject js = new JSONObject(response);
+
+                            JSONArray jsonArray = js.getJSONArray("jornada");
+
+                            jsonString = jsonArray.toString();
+
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                            editor.putString("jsonString", jsonString);
+                            editor.apply();
+
+                            List<JSONObject> jsonValues = new ArrayList<JSONObject>();
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                jsonValues.add(jsonArray.getJSONObject(i));
+                            }
+                            idJ=jsonValues.size();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+        RequestQueue request = Volley.newRequestQueue(this);
+        request.add(stringRequest);
+    }*/
+
 }

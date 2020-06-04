@@ -34,7 +34,6 @@ import com.example.clockin5.ui.inicio.IncioFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,8 +50,7 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     ProgressDialog progressDialog;
     String URL = "http://192.168.1.54/bd/consultartodosempleados.php";
-    String mn;
-    EmpleadosActivity.Adaptador adaptador;
+    //String URL = "http://clockin.byethost32.com/consultartodosempleados.php";
     ArrayList<Empleado> empleadoArrayList = new ArrayList<Empleado>();
     String jsonString;
     JSONArray jsonArray;
@@ -60,13 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private String user;
-    private String baseDatos = "bvwxh4xvfrdqp7ztq9sz";
-    private String usuario = "uddpnkeunuezlkmg";
-    private String contrasena = "86F5ES4UEbzwUUxq52eJ";
-    private String ip = "bvwxh4xvfrdqp7ztq9sz-mysql.services.clever-cloud.com";
-    private String puerto = "3306";
-    private String urlConexionMySQL = "jdbc:mysql://" + ip + ":" + puerto + "/" + baseDatos;
-    private DatabaseReference mDatabase;
 
 
     @Override
@@ -77,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         progressDialog = new ProgressDialog(this);
+
+        empleadoArrayList = new ArrayList<Empleado>();
 
         getEmpleados();
         sharedPreferences = getSharedPreferences("SHARED_PREF_NAME", Context.MODE_PRIVATE);
@@ -106,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
         if (e.getJefe() == false) {
             Menu nav_Menu = navigationView.getMenu();
             nav_Menu.findItem(R.id.nav_empleados).setVisible(false);
@@ -116,11 +110,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
 
-                if (id == R.id.nav_inicio) {
-                    /*Intent ii = new Intent(getApplicationContext(), IncioActivity.class);
-                    //ii.putExtra("names", "jakgl");
-                    startActivity(ii);*/
-                } else if (id == R.id.nav_cerrar) {
+                if (id == R.id.nav_cerrar) {
                     FirebaseAuth.getInstance().signOut();
                     finish();
                     Intent ic = new Intent(getApplicationContext(), LoginActivity.class);
@@ -210,7 +200,8 @@ public class MainActivity extends AppCompatActivity {
     public Empleado getUsuario() {
         SharedPreferences sharedPreferences = getSharedPreferences("SHARED_PREF_NAME", Context.MODE_PRIVATE);
         jsonString = sharedPreferences.getString("jsonString", null);
-//here, string to jsonArray conversion takes place
+
+        //here, string to jsonArray conversion takes place
         try {
             jsonArray = new JSONArray(jsonString);
         } catch (JSONException e) {

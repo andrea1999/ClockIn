@@ -47,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.botonPass);
         contra = findViewById(R.id.tvContra);
 
+        //comprobamos si hay un usuario conectado -> si esta, se abre la pantalla principal
         if (mAuth.getCurrentUser() == null){
             progressDialog = new ProgressDialog(this);
 
@@ -67,12 +68,9 @@ public class LoginActivity extends AppCompatActivity {
             Intent i = new Intent(getApplication(), MainActivity.class);
             startActivity(i);
         }
-
-
-
-        //Toast.makeText(getApplicationContext(), ""+ mAuth.getCurrentUser(), Toast.LENGTH_SHORT).show();
     }
 
+    //metodo que gestiona la recuperacion de la contraseña
     private void recuperarPasswordDiaglog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Recuperar Contraseña");
@@ -106,6 +104,7 @@ public class LoginActivity extends AppCompatActivity {
         builder.create().show();
     }
 
+    //metodo para el envio del email de recuperacion
     private void beginRecovery(String email) {
         progressDialog.setMessage("Enviando email...");
         progressDialog.show();
@@ -129,6 +128,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    //metodo que gestiona el login
     private void signIn() {
         final String email = txtEmail.getText().toString().trim();
         String password = txtPassword.getText().toString().trim();
@@ -149,10 +149,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 Intent i = new Intent(getApplication(), MainActivity.class);
-                                //i.putExtra(MainActivity.user, email);
                                 startActivity(i);
-
-                                Toast.makeText(LoginActivity.this, "Bienvenido: " + email, Toast.LENGTH_LONG).show();
                             } else {
                                 progressDialog.dismiss();
                                 Toast.makeText(LoginActivity.this, "No se pudo iniciar sesión", Toast.LENGTH_LONG).show();

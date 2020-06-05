@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -39,38 +38,35 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    static Connection conexionMySQL;
     TextView tvEmailDrawer, tvNombreDrawer;
     SharedPreferences sharedPreferences;
     ProgressDialog progressDialog;
     String URL = "http://192.168.1.54/bd/consultartodosempleados.php";
-    //String URL = "http://clockin.byethost32.com/consultartodosempleados.php";
     ArrayList<Empleado> empleadoArrayList = new ArrayList<Empleado>();
     String jsonString;
     JSONArray jsonArray;
     Empleado e;
-
     private AppBarConfiguration mAppBarConfiguration;
     private String user;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //obtenemos el usuario actual
         user = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         progressDialog = new ProgressDialog(this);
 
         empleadoArrayList = new ArrayList<Empleado>();
 
+        //obtenemos los empleados registrados en la base de datos y seleccionamos el actual
         getEmpleados();
         sharedPreferences = getSharedPreferences("SHARED_PREF_NAME", Context.MODE_PRIVATE);
 
@@ -79,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //pasamos el id del empleado actual a la pantalla de fichar
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //inicializamos y configuramos el menu principal
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, new IncioFragment()).commit();
 
@@ -120,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(ie);
                 } else if (id == R.id.nav_password) {
                     Intent i = new Intent(getApplicationContext(), PasswordActitvity.class);
-                    //i.putExtra("names", "jakgl");
                     startActivity(i);
                 }
 
@@ -131,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         View headerView = navigationView.getHeaderView(0);
+
         tvNombreDrawer = (TextView) headerView.findViewById(R.id.tvNombreDrawer);
         tvNombreDrawer.setText(e.getNombre());
 
@@ -138,9 +136,9 @@ public class MainActivity extends AppCompatActivity {
         tvEmailDrawer.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
     }
 
+    //inflador del menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -152,24 +150,19 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
+    //obtenemos todos los empleados de la base de datos que esten aun en la empresa
     public void getEmpleados() {
         progressDialog.setMessage("Fetching data from the Server...");
         progressDialog.show();
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
-
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
                         progressDialog.dismiss();
-
-                        Toast.makeText(MainActivity.this, "Data Successfully Fetched", Toast.LENGTH_SHORT).show();
                         try {
                             JSONObject js = new JSONObject(response);
-
                             JSONArray jsonArray = js.getJSONArray("empleado");
-
                             jsonString = jsonArray.toString();
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -197,21 +190,24 @@ public class MainActivity extends AppCompatActivity {
         request.add(stringRequest);
     }
 
+    //obtenemos el empleado actual
     public Empleado getUsuario() {
         SharedPreferences sharedPreferences = getSharedPreferences("SHARED_PREF_NAME", Context.MODE_PRIVATE);
         jsonString = sharedPreferences.getString("jsonString", null);
 
-        //here, string to jsonArray conversion takes place
+        //se convierte de string a jsonarray
         try {
             jsonArray = new JSONArray(jsonString);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         for (int i = 0; i < jsonArray.length(); i++) {
             try {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String idB = jsonObject.getString("id_emp");
-                //simple if statement allows only those jsonObjects to be added the laptopList where price is less than 40000.
+
+                //creamos el objeto empleado que devolveremos
                 if (idB.equals(FirebaseAuth.getInstance().getUid())) {
                     JSONObject jsonObject2 = jsonArray.getJSONObject(i);
                     String id = jsonObject2.getString("id_emp");
@@ -221,15 +217,19 @@ public class MainActivity extends AppCompatActivity {
                     String dni = jsonObject2.getString("dni");
                     String imagen = jsonObject2.getString("imagen");
                     int jefe = jsonObject2.getInt("jefe");
+
                     if (imagen.isEmpty()) {
                         imagen = "";
                     } else if (apellido2.isEmpty()) {
                         apellido2 = "";
                     }
+
                     boolean jefeB = false;
+
                     if (jefe == 1) {
                         jefeB = true;
                     }
+
                     Empleado empleado = new Empleado(id, nombre, apellido1, apellido2, dni, imagen, jefeB);
                     return empleado;
                 }

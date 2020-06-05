@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,16 +28,6 @@ import java.util.List;
 
 public class RegistrosActivity extends AppCompatActivity {
     TextView tvFecha, tvEntrada, tvSalida, tvTotal, tvLocalizacion, tvNotas;
-
-    /*SharedPreferences sharedPreferences;
-    ProgressDialog progressDialog;
-    String URL = "http://192.168.1.54/bd/consultarempleados.php";
-    String mn;
-    EmpleadosActivity.Adaptador adaptador;
-    ArrayList<Empleado> empleadoArrayList = new ArrayList<Empleado>();
-    String jsonString;
-    String idF = null;*/
-
     String jsonString;
     JSONArray jsonArray;
     SharedPreferences shared;
@@ -67,40 +56,14 @@ public class RegistrosActivity extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getUid();
 
+        //obtenemos el registro correspondiente al dia seleccionado
         getRegistros();
         shared = getSharedPreferences("registros", Context.MODE_PRIVATE);
 
-        jornadas = new ArrayList<Jornada>();
-
         getDiario();
-
-        /*String jsonString = sp.getString("jsonString", null);
-        JSONArray jsonArray = null;
-        try {
-            jsonArray = new JSONArray(jsonString);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-            try {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                int id = jsonObject.getInt("id_jornada");
-                int tipo = jsonObject.getInt("tipo");
-                String ubicacion = jsonObject.getString("ubicacion");
-                String hora = jsonObject.getString("hora");
-                String notas = jsonObject.getString("notas");
-
-                Jornada jornada = new Jornada(id, tipo, ubicacion, hora, notas);
-                jornadas.add(jornada);
-            } catch (Exception e) {
-
-            }
-        }
-
-        Toast.makeText(RegistrosActivity.this, "Length" + jornadas.size(), Toast.LENGTH_LONG).show();*/
     }
 
+    //vuelta a la pantalla de inicio
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -113,6 +76,7 @@ public class RegistrosActivity extends AppCompatActivity {
         }
     }
 
+    //obtenemos los registros de la base de datos
     public void getRegistros() {
         String URL = "http://192.168.1.54/bd/consultarregistrosjornada.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
@@ -152,6 +116,7 @@ public class RegistrosActivity extends AppCompatActivity {
         request.add(stringRequest);
     }
 
+    //seleccionamos aquellos que correspondan al dia seleccionado
     public void getDiario() {
         SharedPreferences sharedPreferences = getSharedPreferences("registros", Context.MODE_PRIVATE);
         jsonString = sharedPreferences.getString("jsonString", null);
@@ -162,23 +127,24 @@ public class RegistrosActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String empleado, ubicacion, hora, notas;
-        int jornada, tipo;
+        String empleado, tipo, ubicacion, hora, notas;
+        int jornada;
         for (int i = 0; i < jsonArray.length(); i++) {
             try {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String fechar = jsonObject.getString("1");
 
                 if (fechar.equals(fecha)) {
-                     empleado = jsonObject.getString("0");
-                     jornada = jsonObject.getInt("2");
-                     tipo = jsonObject.getInt("3");
-                     ubicacion = jsonObject.getString("4");
-                     hora = jsonObject.getString("5");
-                     notas = jsonObject.getString("6");
+                    empleado = jsonObject.getString("0");
+                    jornada = jsonObject.getInt("2");
+                    tipo = jsonObject.getString("3");
+                    ubicacion = jsonObject.getString("4");
+                    hora = jsonObject.getString("5");
+                    notas = jsonObject.getString("6");
 
-                    if (user.equals(empleado)){
-                        if (tipo == 1) {
+                    //mostramos los datos en su correspondiente textview
+                    if (user.equals(empleado)) {
+                        if (tipo.equals("1")) {
                             tvSalida.setText(hora);
                         } else {
                             tvEntrada.setText(hora);
@@ -188,11 +154,9 @@ public class RegistrosActivity extends AppCompatActivity {
 
                     }
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-
     }
 }

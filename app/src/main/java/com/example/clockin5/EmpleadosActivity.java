@@ -25,21 +25,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 
 
 public class EmpleadosActivity extends AppCompatActivity {
-    static Connection conexionMySQL;
+
     SharedPreferences sharedPreferences;
     ProgressDialog progressDialog;
-    //String URL = "http://192.168.1.54/bd/consultartodosempleados.php";
-    String URL = "http://clockin.byethost32.com/consultartodosempleados.php";
-    String mn;
     Adaptador adaptador;
 
     ArrayList<Empleado> empleadoArrayList = new ArrayList<Empleado>();
-    String jsonString;
     String idF = null;
     private ListView lista;
 
@@ -54,6 +49,8 @@ public class EmpleadosActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
 
         lista = findViewById(R.id.list);
+
+        //obtenemos los datos guardados en preferencias
         SharedPreferences sp = getSharedPreferences("SHARED_PREF_NAME", Context.MODE_PRIVATE);
         String jsonString = sp.getString("jsonString", null);
         JSONArray jsonArray = null;
@@ -88,6 +85,8 @@ public class EmpleadosActivity extends AppCompatActivity {
 
             }
         }
+
+        //una vez que los tengamos en un arraylist, los cargamos en una lista
         adaptador = new Adaptador(this, empleadoArrayList);
         lista.setAdapter(adaptador);
         adaptador.notifyDataSetChanged();
@@ -102,6 +101,7 @@ public class EmpleadosActivity extends AppCompatActivity {
         });
     }
 
+    //vuelta a la pantalla de inicio
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -136,6 +136,7 @@ public class EmpleadosActivity extends AppCompatActivity {
         }
     }
 
+    //adaptador de listview con el formato de contenedor
     class Adaptador extends ArrayAdapter<Empleado> {
         public Adaptador(Context context, ArrayList<Empleado> empleados) {
             super(context, R.layout.list_item_empleado, empleados);

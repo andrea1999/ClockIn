@@ -43,6 +43,7 @@ public class PasswordActitvity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                //realizamos las comprobaciones necesarias para el cambio -> si son correctas, cambiamos la contraseña almacenada en firebase
                 final String actual, nueva, confirmar;
                 actual = etActual.getText().toString();
                 nueva = etNueva.getText().toString();
@@ -84,6 +85,7 @@ public class PasswordActitvity extends AppCompatActivity {
         });
     }
 
+    //vuelta a la pantalla de inicio
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
